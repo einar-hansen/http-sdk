@@ -24,22 +24,43 @@ use Psr\Http\Message\UriInterface;
  */
 class Gateway
 {
+    protected mixed $options = null;
+
     protected HttpClient $client;
 
     protected RequestFactory $requestFactory;
 
     public function __construct(
+        mixed $options = null,
         ClientInterface $client = null,
         RequestFactoryInterface $requestFactory = null,
         UriFactoryInterface $uriFactory = null,
         StreamFactoryInterface $streamFactory = null,
     ) {
+        $this->options = $options;
         $this->client = $this->createHttpClient($client);
         $this->requestFactory = $this->createRequestFactory(
             $requestFactory,
             $uriFactory,
             $streamFactory
         );
+        if (method_exists($this, 'setUp')) {
+            $this->setUp($options);
+        }
+    }
+
+    public function tapHttpClient(callable $callback): self
+    {
+        $this->client = $callback($this->client);
+
+        return $this;
+    }
+
+    public function tapRequestFactory(callable $callback): self
+    {
+        $this->requestFactory = $callback($this->requestFactory);
+
+        return $this;
     }
 
     /**
