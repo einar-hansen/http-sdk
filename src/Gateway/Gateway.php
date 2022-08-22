@@ -1,8 +1,8 @@
 <?php
 
-namespace EinarHansen\Http\Gateway;
-
 declare(strict_types=1);
+
+namespace EinarHansen\Http\Gateway;
 
 use EinarHansen\Http\Client\HttpClient;
 use EinarHansen\Http\Enums\RequestMethod;
