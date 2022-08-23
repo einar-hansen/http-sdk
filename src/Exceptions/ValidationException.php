@@ -12,7 +12,7 @@ final class ValidationException extends Exception implements ClientExceptionInte
     /**
      * Create a new exception instance.
      *
-     * @param  array  $errors   The array of errors.
+     * @param  array<mixed>  $errors   The array of errors.
      * @return void
      */
     public function __construct(public array $errors = [])
@@ -25,7 +25,7 @@ final class ValidationException extends Exception implements ClientExceptionInte
     /**
      * The array of errors.
      *
-     * @return array
+     * @return array<mixed>
      */
     public function errors(): array
     {

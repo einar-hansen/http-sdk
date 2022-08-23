@@ -30,7 +30,7 @@ final class StreamWrapper
      * Returns a resource representing the stream.
      *
      * @param  StreamInterface  $stream The stream to get a resource for
-     * @return resource
+     * @return resource|false
      *
      * @throws InvalidArgumentException if stream is not readable or writable
      */

@@ -52,6 +52,9 @@ trait ManagesHeaders
         return $this->headers;
     }
 
+    /**
+     * @return  array<int, string>
+     */
     public function getHeader(string $name): array
     {
         if (! $header = $this->getHeaderName($name)) {
@@ -117,7 +120,7 @@ trait ManagesHeaders
      * Set or add the value to the s the header to the existing headers, but replace the specified header
      *
      * @param  string  $name
-     * @param  string|int|float|null|array<string, string[]>  $value
+     * @param  string|string[]|int|float|null  $value
      */
     public function withAddedHeader(string $name, array|string|int|float|null $value): static
     {
@@ -126,6 +129,7 @@ trait ManagesHeaders
         $clone = clone $this;
 
         if ($clone->hasHeader($name)) {
+            /** @var string $header */
             $header = $clone->getHeaderName($name);
             $clone->headers[$header] = array_merge($clone->getHeader($header), $value);
         } else {
@@ -155,9 +159,10 @@ trait ManagesHeaders
     /**
      * From Guzzle Package
      *
+     * @param  string|mixed[]|int|float|null  $value
      * @return string[]
      *
-     * @throws InvalidArgumentException for invalid HTTP methods.
+     *  @throws InvalidArgumentException for invalid HTTP methods.
      */
     public function parseHeaderValue(array|string|int|float|null $value): array
     {
@@ -170,7 +175,8 @@ trait ManagesHeaders
         }
 
         return array_map(function ($value) {
-            if (! is_scalar($value) && null !== $value) {
+            // int, float, string or bool
+            if (! is_scalar($value) && ! is_null($value)) {
                 throw new InvalidArgumentException(sprintf(
                     'Header value must be scalar or null but %s provided.',
                     is_object($value) ? get_class($value) : gettype($value)
@@ -206,9 +212,11 @@ trait ManagesHeaders
     /**
      * From Guzzle Package
      *
+     * @param  string|int|float|null  $value
+     *
      * @see https://tools.ietf.org/html/rfc7230#section-3.2
      */
-    private function validateHeaderValue(array|string|int|float|null $value): void
+    private function validateHeaderValue(string|int|float|bool|null $value): void
     {
         if (! preg_match('/^[\x20\x09\x21-\x7E\x80-\xFF]*$/', (string) $value)) {
             throw new InvalidArgumentException(sprintf('"%s" is not valid header value', $value));

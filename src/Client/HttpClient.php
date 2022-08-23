@@ -43,12 +43,18 @@ class HttpClient implements ClientInterface
         return (int) substr((string) $response->getStatusCode(), 0, 1) === 2;
     }
 
-    public static function getContent(ResponseInterface $response)
+    /**
+     * Transform the items of the collection to the given class.
+     *
+     * @return array<int|string, mixed>|string
+     */
+    public static function getContent(ResponseInterface $response): array|string
     {
         $body = $response->getBody()->__toString();
         if (strpos($response->getHeaderLine('Content-Type'), 'application/json') === 0) {
             $content = json_decode($body, true);
             if (json_last_error() === JSON_ERROR_NONE) {
+                /** @var array<int|string, mixed> $content */
                 return $content;
             }
         }
