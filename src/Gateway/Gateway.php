@@ -10,6 +10,7 @@ use EinarHansen\Http\Exceptions\NotFoundException;
 use EinarHansen\Http\Exceptions\TimeoutException;
 use EinarHansen\Http\Exceptions\ValidationException;
 use EinarHansen\Http\Message\RequestFactory;
+use EinarHansen\Http\Traits\CastsResponses;
 use Exception;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -24,6 +25,8 @@ use Psr\Http\Message\UriInterface;
  */
 class Gateway
 {
+    use CastsResponses;
+
     protected mixed $options = null;
 
     protected HttpClient $client;
@@ -110,6 +113,9 @@ class Gateway
         return $response;
     }
 
+    /**
+     * @param  array<string, mixed>  $options
+     */
     public function createRequest(RequestMethod|string $method, UriInterface|string $uri, array $options = []): RequestInterface
     {
         return $this
@@ -130,6 +136,8 @@ class Gateway
 
     /**
      * Make a POST request to the service and return the response.
+     *
+     * @param  array<string, mixed>  $options
      */
     public function post(UriInterface|string $uri, array $options = []): ResponseInterface
     {
@@ -138,6 +146,8 @@ class Gateway
 
     /**
      * Make a PUT request to the service and return the response.
+     *
+     * @param  array<string, mixed>  $options
      */
     public function put(UriInterface|string $uri, array $options = []): ResponseInterface
     {
@@ -146,6 +156,8 @@ class Gateway
 
     /**
      * Make a PUT request to the service and return the response.
+     *
+     * @param  array<string, mixed>  $options
      */
     public function patch(UriInterface|string $uri, array $options = []): ResponseInterface
     {
@@ -154,6 +166,8 @@ class Gateway
 
     /**
      * Make a DELETE request to the service and return the response.
+     *
+     * @param  array<string, mixed>  $options
      */
     public function delete(UriInterface|string $uri, array $options = []): ResponseInterface
     {
@@ -170,7 +184,12 @@ class Gateway
     protected function handleRequestError(ResponseInterface $response): void
     {
         if ($response->getStatusCode() == 422) {
-            throw new ValidationException(json_decode((string) $response->getBody(), true));
+            $body = json_decode((string) $response->getBody(), true);
+            if (! is_array($body)) {
+                $body = [$body];
+            }
+
+            throw new ValidationException($body);
         }
 
         if ($response->getStatusCode() == 404) {

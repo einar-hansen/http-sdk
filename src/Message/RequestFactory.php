@@ -59,6 +59,8 @@ class RequestFactory implements RequestFactoryInterface
      * Applies the array of request options to a request.
      *
      * Based on GuzzleHttp\Client::applyOptions()
+     *
+     * @param  array<string, mixed>  $options
      */
     public function withOptions(array $options = []): static
     {
@@ -88,7 +90,9 @@ class RequestFactory implements RequestFactoryInterface
         }
 
         if (isset($options['query'])) {
-            $clone = $clone->withQuery($options['query']);
+            /** @var array<string, string|string[]> $query */
+            $query = $options['query'];
+            $clone = $clone->withQuery($query);
         }
 
         return $clone;

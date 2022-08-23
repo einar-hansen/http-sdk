@@ -12,7 +12,7 @@ trait Conditionable
     /**
      * Apply the callback if the given "value" is (or resolves to) truthy.
      */
-    public function when($value, callable $callback = null, callable $default = null)
+    public function when(mixed $value, callable $callback, callable $default = null): static
     {
         $value = $value instanceof Closure ? $value($this) : $value;
 
@@ -28,7 +28,7 @@ trait Conditionable
     /**
      * Apply the callback if the given "value" is (or resolves to) falsy.
      */
-    public function unless($value, callable $callback = null, callable $default = null)
+    public function unless(mixed $value, callable $callback, callable $default = null): static
     {
         $value = $value instanceof Closure ? $value($this) : $value;
 

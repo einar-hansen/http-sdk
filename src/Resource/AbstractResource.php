@@ -10,6 +10,9 @@ use ReflectionProperty;
 
 abstract class AbstractResource
 {
+    /**
+     * @param  array<string, mixed>  $attributes
+     */
     public function __construct(
         public array $attributes = [],
         protected ?Gateway $gateway = null
@@ -37,6 +40,24 @@ abstract class AbstractResource
         }
 
         return str_replace(' ', '', implode(' ', $parts));
+    }
+
+    /**
+     * Transform the items of the collection to the given class.
+     *
+     * @param   array<int, array<string, string>>  $collection
+     * @param   string  $class
+     * @param   array<string, string>  $extraData
+     * @return  array<int, mixed>
+     */
+    protected function castToArray(
+        array $collection,
+        string $class,
+        array $extraData = []
+    ): array {
+        return array_map(function ($data) use ($class, $extraData) {
+            return new $class($data + $extraData, $this->gateway);
+        }, $collection);
     }
 
     public function __sleep()

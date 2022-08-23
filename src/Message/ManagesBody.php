@@ -18,6 +18,7 @@ trait ManagesBody
 
     public function withBody(mixed $body = ''): static
     {
+        /** @var \Psr\Http\Message\StreamInterface $body */
         $body = $this->parseBody($body);
         $clone = clone $this;
         $clone->body = $body;
@@ -26,9 +27,11 @@ trait ManagesBody
     }
 
     /**
-     * Create a new URI.
+     * Create a Stream object, we expect the following types.
+     * - resource
+     * - string
+     * - \Psr\Http\Message\StreamInterface
      *
-     * @param  resource|null|string|\Psr\Http\Message\StreamInterface  $body
      * @return \Psr\Http\Message\StreamInterface
      *
      * @throws InvalidArgumentException If the given URI cannot be parsed.

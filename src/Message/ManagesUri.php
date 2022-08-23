@@ -91,6 +91,10 @@ trait ManagesUri
         return $clone;
     }
 
+    /**
+     * Transform the items of the collection to the given class.
+     * @param  string|array<string, string|string[]>  $query
+     */
     public function withQuery(array|string $query): static
     {
         $uri = $this->getUri();

@@ -12,7 +12,7 @@ final class TimeoutException extends Exception implements ClientExceptionInterfa
     /**
      * Create a new exception instance.
      *
-     * @param  array  $output
+     * @param  array<mixed>  $output
      * @return void
      */
     public function __construct(public array $output = [])
@@ -25,7 +25,7 @@ final class TimeoutException extends Exception implements ClientExceptionInterfa
     /**
      * The output returned from the operation.
      *
-     * @return array
+     * @return array<mixed>
      */
     public function output(): array
     {
