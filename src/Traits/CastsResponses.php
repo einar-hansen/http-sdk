@@ -39,7 +39,7 @@ trait CastsResponses
     /**
      * Transform the items of the collection to the given class.
      *
-     * @param   array<string, mixed>  $extraData
+     * @param  array<string, mixed>  $extraData
      * @return  array<int, mixed>
      */
     protected function castToArray(
@@ -63,7 +63,7 @@ trait CastsResponses
      * Transform the items of the collection to the given class
      * using '/' as pointer.
      *
-     * @param   array<string, mixed>  $extraData
+     * @param  array<string, mixed>  $extraData
      * @return  iterable<int, mixed>
      */
     protected function castToGenerator(

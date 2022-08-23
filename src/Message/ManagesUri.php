@@ -93,6 +93,7 @@ trait ManagesUri
 
     /**
      * Transform the items of the collection to the given class.
+     *
      * @param  string|array<string, string|string[]>  $query
      */
     public function withQuery(array|string $query): static

@@ -45,9 +45,9 @@ abstract class AbstractResource
     /**
      * Transform the items of the collection to the given class.
      *
-     * @param   array<int, array<string, string>>  $collection
-     * @param   string  $class
-     * @param   array<string, string>  $extraData
+     * @param  array<int, array<string, string>>  $collection
+     * @param  string  $class
+     * @param  array<string, string>  $extraData
      * @return  array<int, mixed>
      */
     protected function castToArray(

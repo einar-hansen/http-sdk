@@ -213,6 +213,7 @@ trait ManagesHeaders
      * From Guzzle Package
      *
      * @param  string|int|float|null  $value
+     *
      * @see https://tools.ietf.org/html/rfc7230#section-3.2
      */
     private function validateHeaderValue(string|int|float|bool|null $value): void
