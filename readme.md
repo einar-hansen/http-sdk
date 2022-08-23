@@ -1,4 +1,4 @@
-# PHP Football Data
+# PHP HTTP Gateway
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/einar-hansen/http-gateway.svg)](https://packagist.org/packages/einar-hansen/http-gateway)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%208.1-8892BF.svg)](https://php.net/)
