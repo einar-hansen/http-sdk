@@ -4,21 +4,41 @@ declare(strict_types=1);
 
 namespace EinarHansen\Http\Resource;
 
-use EinarHansen\Http\Gateway\Gateway;
+use EinarHansen\Http\Service\ServiceContract;
 use ReflectionObject;
 use ReflectionProperty;
 
-abstract class AbstractResource
+/**
+ * This class is the base class that should be extended by all
+ * resources returned from the Service.
+ *
+ * Based on the Laravel\Forge\Resources\Resource class from the Forge SDK.
+ *
+ * @author      Einar-Johan Hansen <einar@einarhansen.dev>
+ *
+ * @see         https://github.com/laravel/forge-sdk
+ */
+class Resource
 {
-    /**
-     * @param  array<string, mixed>  $attributes
-     */
     public function __construct(
-        public array $attributes = [],
-        protected ?Gateway $gateway = null
+        private readonly ServiceContract $service,
     ) {
-        $this->fill();
     }
+
+    public function service(): ServiceContract
+    {
+        return $this->service;
+    }
+
+    // /**
+    //  * @param  array<string, mixed>  $attributes
+    //  */
+    // public function __construct(
+    //     public readonly array $attributes = [],
+    //     protected readonly ?ServiceContract $service = null
+    // ) {
+    //     $this->fill();
+    // }
 
     protected function fill(): void
     {
@@ -56,7 +76,7 @@ abstract class AbstractResource
         array $extraData = []
     ): array {
         return array_map(function ($data) use ($class, $extraData) {
-            return new $class($data + $extraData, $this->gateway);
+            return new $class($data + $extraData, $this->service());
         }, $collection);
     }
 
@@ -68,6 +88,6 @@ abstract class AbstractResource
             return $property->getName();
         }, $publicProperties);
 
-        return array_diff($publicPropertyNames, ['gateway', 'attributes']);
+        return array_diff($publicPropertyNames, ['service', 'attributes']);
     }
 }

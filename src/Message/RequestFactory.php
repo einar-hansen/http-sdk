@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace EinarHansen\Http\Message;
 
+use EinarHansen\Http\Trait\Conditionable;
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -12,6 +14,7 @@ use Psr\Http\Message\UriFactoryInterface;
 class RequestFactory implements RequestFactoryInterface
 {
     use Conditionable;
+    use ManagesClient;
     use ManagesRequestFactory;
     use ManagesUriFactory;
     use ManagesStreamFactory;
@@ -21,13 +24,15 @@ class RequestFactory implements RequestFactoryInterface
     use ManagesBody;
 
     public function __construct(
+        ClientInterface $client = null,
         RequestFactoryInterface $requestFactory = null,
-        UriFactoryInterface $uriFactory = null,
         StreamFactoryInterface $streamFactory = null,
+        UriFactoryInterface $uriFactory = null,
     ) {
+        $this->setClient($client);
         $this->setRequestFactory($requestFactory);
-        $this->setUriFactory($uriFactory);
         $this->setStreamFactory($streamFactory);
+        $this->setUriFactory($uriFactory);
         $this->uri = $this->parseUri('https://localhost/');
         $this->body = $this->parseBody('');
     }
@@ -53,48 +58,5 @@ class RequestFactory implements RequestFactoryInterface
         }
 
         return $request->withBody($this->getBody());
-    }
-
-    /**
-     * Applies the array of request options to a request.
-     *
-     * Based on GuzzleHttp\Client::applyOptions()
-     *
-     * @param  array<string, mixed>  $options
-     */
-    public function withOptions(array $options = []): static
-    {
-        $clone = clone $this;
-
-        if (isset($options['headers']) && is_array($options['headers'])) {
-            foreach ($options['headers'] as $name => $value) {
-                $clone = $clone->withHeader($name, $value);
-            }
-        }
-
-        if (isset($options['form_params'])) {
-            $clone = $clone->withBody($options['body'])
-                ->withHeader('Content-Type', 'application/x-www-form-urlencoded');
-        }
-
-        if (isset($options['multipart'])) {
-            $clone = $clone->withBody($options['multipart']);
-        }
-        if (isset($options['body'])) {
-            $clone = $clone->withBody($options['body']);
-        }
-
-        if (isset($options['json'])) {
-            $clone = $clone->withBody(json_encode($options['json']))
-                ->withHeader('Content-Type', 'application/json');
-        }
-
-        if (isset($options['query'])) {
-            /** @var array<string, string|string[]> $query */
-            $query = $options['query'];
-            $clone = $clone->withQuery($query);
-        }
-
-        return $clone;
     }
 }

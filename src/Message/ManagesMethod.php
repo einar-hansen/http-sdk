@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace EinarHansen\Http\Message;
 
-use EinarHansen\Http\Enums\RequestMethod;
+use EinarHansen\Http\Enum\RequestMethod;
 use InvalidArgumentException;
 
 trait ManagesMethod
@@ -32,51 +32,6 @@ trait ManagesMethod
         $clone->method = $method;
 
         return $clone;
-    }
-
-    public function get(): static
-    {
-        return $this->withMethod(RequestMethod::GET);
-    }
-
-    public function head(): static
-    {
-        return $this->withMethod(RequestMethod::HEAD);
-    }
-
-    public function post(): static
-    {
-        return $this->withMethod(RequestMethod::POST);
-    }
-
-    public function put(): static
-    {
-        return $this->withMethod(RequestMethod::PUT);
-    }
-
-    public function delete(): static
-    {
-        return $this->withMethod(RequestMethod::DELETE);
-    }
-
-    public function connect(): static
-    {
-        return $this->withMethod(RequestMethod::CONNECT);
-    }
-
-    public function options(): static
-    {
-        return $this->withMethod(RequestMethod::OPTIONS);
-    }
-
-    public function trace(): static
-    {
-        return $this->withMethod(RequestMethod::TRACE);
-    }
-
-    public function patch(): static
-    {
-        return $this->withMethod(RequestMethod::PATCH);
     }
 
     /**

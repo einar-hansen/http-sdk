@@ -1,5 +1,5 @@
 {
-    "name": "einar-hansen/http-gateway",
+    "name": "einar-hansen/http-sdk",
     "description": "A PHP service that allows you to communicate with external apis using PSR-18 clients.",
     "keywords": [
         "einar",
@@ -8,7 +8,7 @@
         "http",
         "psr-18"
     ],
-    "homepage": "https://github.com/einar-hansen/http-gateway",
+    "homepage": "https://github.com/einar-hansen/http-sdk",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -29,26 +29,36 @@
     },
     "require-dev": {
         "laravel/pint": "^1.0",
+        "nyholm/psr7": "^1.4",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan-deprecation-rules": "^1.0",
-        "phpstan/phpstan-phpunit": "^1.0"
+        "phpstan/phpstan-phpunit": "^1.0",
+        "phpunit/phpunit": "^9.5",
+        "symfony/http-client": "^v6.0",
+        "symfony/var-dumper": "^6.1"
     },
     "autoload": {
         "psr-4": {
             "EinarHansen\\Http\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "scripts": {
         "analyse": "vendor/bin/phpstan --level=5 analyse",
         "format": "vendor/bin/pint",
-        "test": "vendor/bin/pest",
+        "test": "vendor/bin/phpunit --testdox",
         "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
     },
     "config": {
         "sort-packages": true,
+        "preferred-install": "dist",
+        "optimize-autoloader": true,
         "allow-plugins": {
-            "phpstan/extension-installer": true,
-            "pestphp/pest-plugin": true
+            "phpstan/extension-installer": true
         }
     },
     "minimum-stability": "dev",

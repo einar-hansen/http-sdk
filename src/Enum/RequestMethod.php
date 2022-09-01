@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace EinarHansen\Http\Enums;
+namespace EinarHansen\Http\Enum;
 
 /**
  * To comply with Psr\Http\Message\RequestInterface::class methods

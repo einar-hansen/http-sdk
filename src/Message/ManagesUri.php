@@ -36,7 +36,10 @@ trait ManagesUri
     public function withScheme(string $scheme): static
     {
         $uri = $this->getUri();
-        $clone = $this->withUri($uri->withScheme($scheme), false);
+        $clone = $this->withUri(
+            uri: $uri->withScheme($scheme),
+            preserveHost: false
+        );
 
         return $clone;
     }
@@ -44,7 +47,10 @@ trait ManagesUri
     public function withHost(string $host): static
     {
         $uri = $this->getUri();
-        $clone = $this->withUri($uri->withHost($host), false);
+        $clone = $this->withUri(
+            uri: $uri->withHost($host),
+            preserveHost: false
+        );
 
         return $clone;
     }
@@ -52,7 +58,10 @@ trait ManagesUri
     public function withPort(?int $port = null): static
     {
         $uri = $this->getUri();
-        $clone = $this->withUri($uri->withPort($port), false);
+        $clone = $this->withUri(
+            uri: $uri->withPort($port),
+            preserveHost: false
+        );
 
         return $clone;
     }
@@ -62,11 +71,11 @@ trait ManagesUri
         $uri = $this->parseUri($uri);
 
         return $this->withUri(
-            $this->getUri()
+            uri: $this->getUri()
                 ->withScheme($uri->getScheme())
                 ->withHost($uri->getHost())
                 ->withPort($uri->getPort()),
-            false
+            preserveHost: false
         );
     }
 
@@ -75,24 +84,27 @@ trait ManagesUri
         $uri = $this->parseUri($uri);
 
         return $this->withUri(
-            $this->getUri()
+            uri: $this->getUri()
                 ->withPath($uri->getPath())
                 ->withQuery($uri->getQuery())
                 ->withFragment($uri->getFragment()),
-            false
+            preserveHost: false
         );
     }
 
     public function withPath(string $path): static
     {
         $uri = $this->getUri();
-        $clone = $this->withUri($uri->withPath($path), true);
+        $clone = $this->withUri(
+            uri: $uri->withPath($path),
+            preserveHost: true
+        );
 
         return $clone;
     }
 
     /**
-     * Transform the items of the collection to the given class.
+     * Replaces the whole query and return a cloned object.
      *
      * @param  string|array<string, string|string[]>  $query
      */
@@ -102,15 +114,82 @@ trait ManagesUri
         if (is_array($query)) {
             $query = http_build_query($query, '', '&', \PHP_QUERY_RFC3986);
         }
-        $clone = $this->withUri($uri->withQuery($query), true);
+        $clone = $this->withUri(
+            uri: $uri->withQuery(
+                query: $query
+            ),
+            preserveHost: true
+        );
 
         return $clone;
+    }
+
+    /**
+     * Creates a new cloned object with the specific query string value removed.
+     *
+     * Any existing query string values that exactly match the provided key are
+     * removed.
+     */
+    public function withoutQueryValue(string $key): static
+    {
+        $result = self::getFilteredQueryString(
+            uri: $this->getUri(),
+            keys: [$key]
+        );
+
+        return $this->withQuery(implode('&', $result));
+    }
+
+    /**
+     * Creates a new cloned object with a specific query string value.
+     *
+     * Any existing query string values that exactly match the provided key are
+     * removed and replaced with the given key value pair.
+     *
+     * A value of null will set the query string key without a value, e.g. "key"
+     * instead of "key=value".
+     *
+     * @param  string  $key   Key to set.
+     * @param  string|null  $value Value to set
+     */
+    public function withQueryValue(string $key, string|int|float $value = null): static
+    {
+        $result = self::getFilteredQueryString($this->getUri(), [$key]);
+
+        $result[] = self::generateQueryString($key, $value);
+
+        return $this->withQuery(implode('&', $result));
+    }
+
+    /**
+     * Creates a new URI with multiple specific query string values.
+     *
+     * @param  array<string, string|string[]|null>  $keyValueArray Associative array of key and values
+     */
+    public function withQueryValues(array $array = []): static
+    {
+        $result = self::getFilteredQueryString($this->getUri(), array_keys($array));
+
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $value = implode(
+                    separator: ',',
+                    array: $value
+                );
+            }
+            $result[] = self::generateQueryString((string) $key, $value !== null ? (string) $value : null);
+        }
+
+        return $this->withQuery(implode('&', $result));
     }
 
     public function withFragment(string $fragment): static
     {
         $uri = $this->getUri();
-        $clone = $this->withUri($uri->withFragment($fragment), true);
+        $clone = $this->withUri(
+            uri: $uri->withFragment($fragment),
+            preserveHost: true
+        );
 
         return $clone;
     }
@@ -151,5 +230,42 @@ trait ManagesUri
         }
 
         return $this->getUriFactory()->createUri($uri);
+    }
+
+    /**
+     * Based on GuzzleHttp\Psr7\Request::getFilteredQueryString()
+     *
+     * @param  string[]  $keys
+     * @return string[]
+     */
+    private static function getFilteredQueryString(UriInterface $uri, array $keys): array
+    {
+        $current = $uri->getQuery();
+
+        if ($current === '') {
+            return [];
+        }
+
+        $decodedKeys = array_map('rawurldecode', $keys);
+
+        return array_filter(explode('&', $current), function ($part) use ($decodedKeys) {
+            return ! in_array(rawurldecode(explode('=', $part)[0]), $decodedKeys, true);
+        });
+    }
+
+    private static function generateQueryString(string $key, string|int|float $value = null): string
+    {
+        // Query string separators ("=", "&") within the key or value need to be encoded
+        // (while preventing double-encoding) before setting the query string. All other
+        // chars that need percent-encoding will be encoded by withQuery().
+        $querySeparatorsReplacement = ['=' => '%3D', '&' => '%26'];
+
+        $queryString = strtr($key, $querySeparatorsReplacement);
+
+        if ($value !== null) {
+            $queryString .= '='.strtr((string) $value, $querySeparatorsReplacement);
+        }
+
+        return $queryString;
     }
 }

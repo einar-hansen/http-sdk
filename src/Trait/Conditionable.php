@@ -1,6 +1,6 @@
 <?php
 
-namespace EinarHansen\Http\Message;
+namespace EinarHansen\Http\Trait;
 
 use Closure;
 
