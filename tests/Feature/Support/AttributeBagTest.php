@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Support;
+namespace Tests\Feature\Support;
 
 use EinarHansen\Http\Support\AttributeBag;
 use PHPUnit\Framework\TestCase;
@@ -12,7 +12,7 @@ final class AttributeBagTest extends TestCase
     /**
      * @test
      */
-    public function testCanBeCreatedFromValidEmailAddress(): void
+    public function it_can_get_a_string(): void
     {
         $attributeBag = new AttributeBag(['string' => '::string::']);
 

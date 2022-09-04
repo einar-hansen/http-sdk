@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace EinarHansen\Http\Message;
 
 use EinarHansen\Http\Enum\RequestMethod;
-use Exception;
 use Http\Discovery\Psr18ClientDiscovery;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -56,7 +55,7 @@ trait ManagesClient
     /**
      * Make a GET request to the service and return the response.
      */
-    public function head(string $url, $query = []): ResponseInterface
+    public function head(string $url, array $query = []): ResponseInterface
     {
         return $this->withMethod(method: RequestMethod::HEAD)
             ->withRelativeUri(uri: $url)
@@ -69,14 +68,11 @@ trait ManagesClient
      *
      * @param  array<string, mixed>  $options
      */
-    public function post(string $url, array $body = []): ResponseInterface
+    public function post(string $url, string $body = null): ResponseInterface
     {
-        // To be completed;
-        throw new Exception('Method not implemented yet');
-
         return $this->withMethod(method: RequestMethod::POST)
             ->withRelativeUri(uri: $url)
-            ->withBody(body: $body)
+            ->when($body, fn ($request) => $request->withBody(body: $body))
             ->send();
     }
 
@@ -85,14 +81,11 @@ trait ManagesClient
      *
      * @param  array<string, mixed>  $options
      */
-    public function put(string $url, array $body = []): ResponseInterface
+    public function put(string $url, string $body = null): ResponseInterface
     {
-        // To be completed;
-        throw new Exception('Method not implemented yet');
-
         return $this->withMethod(method: RequestMethod::PUT)
             ->withRelativeUri(uri: $url)
-            ->withBody(body: $body)
+            ->when($body, fn ($request) => $request->withBody(body: $body))
             ->send();
     }
 
@@ -101,14 +94,11 @@ trait ManagesClient
      *
      * @param  array<string, mixed>  $options
      */
-    public function patch(string $url, array $body = []): ResponseInterface
+    public function patch(string $url, string $body = null): ResponseInterface
     {
-        // To be completed;
-        throw new Exception('Method not implemented yet');
-
         return $this->withMethod(method: RequestMethod::PATCH)
             ->withRelativeUri(uri: $url)
-            ->withBody(body: $body)
+            ->when($body, fn ($request) => $request->withBody(body: $body))
             ->send();
     }
 
@@ -117,14 +107,11 @@ trait ManagesClient
      *
      * @param  array<string, mixed>  $options
      */
-    public function delete(string $url, array $body = []): ResponseInterface
+    public function delete(string $url, string $body = null): ResponseInterface
     {
-        // To be completed;
-        throw new Exception('Method not implemented yet');
-
         return $this->withMethod(method: RequestMethod::DELETE)
             ->withRelativeUri(uri: $url)
-            ->withBody(body: $body)
+            ->when($body, fn ($request) => $request->withBody(body: $body))
             ->send();
     }
 
