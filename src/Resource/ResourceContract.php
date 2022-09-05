@@ -32,6 +32,7 @@ interface ResourceContract
      *
      * @param  array<string, mixed>  $extraData
      * @return  iterable<int, \EinarHansen\Http\Data\DataContract>
+     *
      * @throws \EinarHansen\Http\Exception\InvalidDataFactory
      */
     public function makeDataCollection(
