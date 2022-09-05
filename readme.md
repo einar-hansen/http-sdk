@@ -28,18 +28,25 @@ Fix post, put, patch methods, content body
 Complete AttributeBag class
 
 ## Testing
-```bash
-# Install packages
-docker run --rm \
-    -u "$(id -u):$(id -g)" \
-    -v $(pwd):/var/www/html \
-    -w /var/www/html \
-    laravelsail/php81-composer:latest \
-    composer install
 
-# Run code style formatting and static analysis
-docker run -it -v $(pwd):/app -w /app php:8.1-alpine vendor/bin/pint src
-docker run -it -v $(pwd):/app -w /app php:8.1-alpine vendor/bin/phpstan --level=9 analyse
+This package requires PHP8.1. If you don't have this version locally or as default PHP version, then you can use the `bin/develop` helper script. The script is inspired by Laravel Sail, but is much simpler. To use the script you should have Docker installed. It will pull down PHP8.1 for you and allow you to run the testing commands below.
+
+To use the script
+```bash
+# Enable helper script
+chmod +x bin/develop
+
+# Install PHP dependencies
+bin/develop composer install
+
+# Run code style formatting
+bin/develop format
+
+# Run static analysis
+bin/develop analyse
+
+# Run tests
+bin/develop test
 ```
 
 ## About
