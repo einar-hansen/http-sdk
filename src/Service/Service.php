@@ -6,18 +6,11 @@ namespace EinarHansen\Http\Service;
 
 use EinarHansen\Http\Collection\ArrayCollectionFactory;
 use EinarHansen\Http\Collection\CollectionFactoryInterface;
-use EinarHansen\Http\Enum\RequestMethod;
-use EinarHansen\Http\Exception\NotFoundException;
-use EinarHansen\Http\Exception\ValidationException;
 use EinarHansen\Http\Message\RequestFactory;
-use Exception;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
-use Psr\Http\Message\UriInterface;
 
 /**
  * This service is what is called a "Calling Library" in PSR-18.
@@ -59,57 +52,5 @@ class Service
     public function getRequestFactory(): RequestFactory
     {
         return $this->requestFactory;
-    }
-
-    /**
-     * @throws \Psr\Http\Client\ClientExceptionInterface If an error happens while processing the request.
-     */
-    public function send(RequestInterface $request): ResponseInterface
-    {
-        $response = $this->getRequestFactory()->sendRequest($request);
-        $statusCode = $response->getStatusCode();
-        if ($statusCode < 200 || $statusCode > 299) {
-            $this->handleRequestError($response);
-        }
-
-        return $response;
-    }
-
-    /**
-     * @param  array<string, mixed>  $options
-     */
-    public function createRequest(RequestMethod|string $method, UriInterface|string $uri, array $options = []): RequestInterface
-    {
-        return $this
-            ->getRequestFactory()
-            ->withMethod($method)
-            ->withRelativeUri($uri)
-            ->withOptions($options)
-            ->create();
-    }
-
-    /**
-     * Handle the request error.
-     *
-     * @throws Exception
-     * @throws \EinarHansen\Http\Exception\ValidationException
-     * @throws \EinarHansen\Http\Exception\NotFoundException
-     */
-    protected function handleRequestError(ResponseInterface $response): void
-    {
-        if ($response->getStatusCode() == 422) {
-            $body = json_decode((string) $response->getBody(), true);
-            if (! is_array($body)) {
-                $body = [$body];
-            }
-
-            throw new ValidationException($body);
-        }
-
-        if ($response->getStatusCode() == 404) {
-            throw new NotFoundException();
-        }
-
-        throw new Exception((string) $response->getBody());
     }
 }

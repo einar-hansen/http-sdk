@@ -34,7 +34,7 @@ class ResponseSerializer
         if (static::isTextResponse(header: $type)) {
             $body = (string) $response->getBody();
         } else {
-            $body = base64_encode(string: $response->getBody());
+            $body = base64_encode(string: (string) $response->getBody());
         }
 
         return file_put_contents(

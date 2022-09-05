@@ -40,10 +40,10 @@ class GeneratorCollectionFactory implements CollectionFactoryInterface
                 ]
             );
             foreach ($generator as $key => $data) {
-                /** @var array<string|int, mixed> $attributes */
-                $attributes = json_decode($data, true);
+                /** @var array<string, mixed> $attributes */
+                $attributes = json_decode(json: $data, associative:  true);
 
-                yield new $class($attributes + $extraData, $this);
+                yield $factory->make($attributes + $extraData);
             }
         }
     }

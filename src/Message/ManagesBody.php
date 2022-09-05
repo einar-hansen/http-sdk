@@ -29,7 +29,7 @@ trait ManagesBody
     /**
      * Adds a json body to the request.
      *
-     * @return $this
+     * @param  string|array<string, mixed>  $body
      */
     public function withJson(array|string $body = ''): static
     {
@@ -47,7 +47,7 @@ trait ManagesBody
     /**
      * Adds a form data to the request.
      *
-     * @return $this
+     * @param  string|array<string, mixed>  $body
      */
     public function withForm(array|string $body = ''): static
     {

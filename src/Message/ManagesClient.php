@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace EinarHansen\Http\Message;
 
 use EinarHansen\Http\Enum\RequestMethod;
+use EinarHansen\Http\Exception\TimeoutException;
 use Http\Discovery\Psr18ClientDiscovery;
 use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 
 trait ManagesClient
@@ -26,10 +26,10 @@ trait ManagesClient
         return $this;
     }
 
-    public function withClient(RequestFactoryInterface $requestFactory = null): static
+    public function withClient(ClientInterface $client = null): static
     {
         $clone = clone $this;
-        $clone->setRequestFactory(requestFactory: $client);
+        $clone->setClient(client: $client);
 
         return $clone;
     }
@@ -65,8 +65,6 @@ trait ManagesClient
 
     /**
      * Make a POST request to the service and return the response.
-     *
-     * @param  array<string, mixed>  $options
      */
     public function post(string $url, string $body = null): ResponseInterface
     {
@@ -78,8 +76,6 @@ trait ManagesClient
 
     /**
      * Make a PUT request to the service and return the response.
-     *
-     * @param  array<string, mixed>  $options
      */
     public function put(string $url, string $body = null): ResponseInterface
     {
@@ -91,8 +87,6 @@ trait ManagesClient
 
     /**
      * Make a PUT request to the service and return the response.
-     *
-     * @param  array<string, mixed>  $options
      */
     public function patch(string $url, string $body = null): ResponseInterface
     {
@@ -104,8 +98,6 @@ trait ManagesClient
 
     /**
      * Make a DELETE request to the service and return the response.
-     *
-     * @param  array<string, mixed>  $options
      */
     public function delete(string $url, string $body = null): ResponseInterface
     {
@@ -115,21 +107,21 @@ trait ManagesClient
             ->send();
     }
 
-    public function connect(string $url): static
+    public function connect(string $url): ResponseInterface
     {
         return $this->withMethod(method: RequestMethod::CONNECT)
             ->withRelativeUri(uri: $url)
             ->send();
     }
 
-    public function options(string $url): static
+    public function options(string $url): ResponseInterface
     {
         return $this->withMethod(method: RequestMethod::OPTIONS)
             ->withRelativeUri(uri: $url)
             ->send();
     }
 
-    public function trace(string $url): static
+    public function trace(string $url): ResponseInterface
     {
         return $this->withMethod(method: RequestMethod::TRACE)
             ->withRelativeUri(uri: $url)

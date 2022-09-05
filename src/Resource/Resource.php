@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace EinarHansen\Http\Resource;
 
 use EinarHansen\Http\Collection\CollectionFactoryInterface;
+use EinarHansen\Http\Data\DataContract;
 use EinarHansen\Http\Exception\InvalidDataFactory;
 use EinarHansen\Http\Factory\FactoryContract;
 use EinarHansen\Http\Service\ServiceContract;
@@ -36,13 +37,14 @@ class Resource implements ResourceContract
         FactoryContract|string $factory,
         string $pointer = null,
         array $extraData = []
-    ): iterable {
+    ): DataContract {
         if (is_string(value: $factory)) {
             static::validateFactoryContract(factory: $factory);
+            /** @var \EinarHansen\Http\Factory\FactoryContract $factory */
             $factory = new $factory();
         }
 
-        $factory->make(
+        return $factory->make(
             attributes: Arr::transformResponseToArray(
                 response: $response,
                 key: $pointer
@@ -61,11 +63,12 @@ class Resource implements ResourceContract
     ): iterable {
         if (is_string(value: $factory)) {
             static::validateFactoryContract(factory: $factory);
+            /** @var \EinarHansen\Http\Factory\FactoryContract $factory */
             $factory = new $factory();
         }
 
         return $this->collectionFactory
-            ->cast(
+            ->make(
                 response: $response,
                 factory: $factory,
                 pointer: $pointer,
