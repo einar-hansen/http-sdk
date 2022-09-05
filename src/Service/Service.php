@@ -89,27 +89,6 @@ class Service
     }
 
     /**
-     * Transform the items of the collection to the given class.
-     *
-     * @param  array<string, mixed>  $extraData
-     * @return  iterable<int, \EinarHansen\Http\Data\DataContract>
-     */
-    public function makeCollection(
-        ResponseInterface $response,
-        string $factory,
-        string $pointer = null,
-        array $extraData = []
-    ): iterable {
-        return $this->collectionFactory
-            ->cast(
-                response: $response,
-                factory: $factory,
-                pointer: $pointer,
-                extraData: $extraData,
-            );
-    }
-
-    /**
      * Handle the request error.
      *
      * @throws Exception

@@ -6,31 +6,25 @@ namespace EinarHansen\Http\Collection;
 
 use EinarHansen\Http\Factory\FactoryContract;
 use Exception;
-use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
-use ReflectionClass;
 
 class ArrayCollectionFactory implements CollectionFactoryInterface
 {
     /**
      * {@inheritDoc}
      */
-    public static function cast(
+    public function make(
         ResponseInterface $response,
-        FactoryContract|string $factory,
+        FactoryContract $factory,
         string $pointer = null,
         array $extraData = []
     ): iterable {
-        if (is_string(value: $factory)) {
-            static::validateFactoryContract(factory: $factory);
-        }
-
         return array_map(function ($data) use ($factory, $extraData) {
             if (! is_array($data)) {
                 throw new Exception('Collection must consist of array data');
             }
 
-            return $factory::make($data + $extraData);
+            return $factory->make($data + $extraData);
         }, static::transformResponseToArray($response, $pointer));
     }
 
@@ -85,13 +79,5 @@ class ArrayCollectionFactory implements CollectionFactoryInterface
         }
 
         return array_values($array);
-    }
-
-    public static function validateFactoryContract(string $factory): void
-    {
-        $reflection = new ReflectionClass(objectOrClass: $factory);
-        if (! $reflection->implementsInterface(interface: FactoryContract::class)) {
-            throw new InvalidArgumentException('The factory class ['.$factory.'] must be an instance of '.FactoryContract::class);
-        }
     }
 }

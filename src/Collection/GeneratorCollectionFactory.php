@@ -6,27 +6,21 @@ namespace EinarHansen\Http\Collection;
 
 use EinarHansen\Http\Factory\FactoryContract;
 use EinarHansen\Http\Wrapper\StreamWrapper;
-use InvalidArgumentException;
 use JsonMachine\Items;
 use JsonMachine\JsonDecoder\PassThruDecoder;
 use Psr\Http\Message\ResponseInterface;
-use ReflectionClass;
 
 class GeneratorCollectionFactory implements CollectionFactoryInterface
 {
     /**
      * {@inheritDoc}
      */
-    public function cast(
+    public function make(
         ResponseInterface $response,
-        FactoryContract|string $factory,
+        FactoryContract $factory,
         string $pointer = null,
         array $extraData = []
     ): iterable {
-        if (is_string(value: $factory)) {
-            static::validateFactoryContract(factory: $factory);
-        }
-
         if (is_numeric(value: $pointer)) {
             $pointer = (string) $pointer;
         }
@@ -51,14 +45,6 @@ class GeneratorCollectionFactory implements CollectionFactoryInterface
 
                 yield new $class($attributes + $extraData, $this);
             }
-        }
-    }
-
-    public static function validateFactoryContract(string $factory): void
-    {
-        $reflection = new ReflectionClass(objectOrClass: $factory);
-        if (! $reflection->implementsInterface(interface: FactoryContract::class)) {
-            throw new InvalidArgumentException('The factory class ['.$class.'] must be an instance of '.FactoryContract::class);
         }
     }
 }

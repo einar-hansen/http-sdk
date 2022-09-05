@@ -15,9 +15,9 @@ interface CollectionFactoryInterface
      * @param  array<string, mixed>  $extraData
      * @return  iterable<int, \EinarHansen\Http\Data\DataContract>
      */
-    public static function cast(
+    public function make(
         ResponseInterface $response,
-        FactoryContract|string $factory,
+        FactoryContract $factory,
         string $pointer = null,
         array $extraData = []
     ): iterable;

@@ -14,5 +14,5 @@ interface FactoryContract
      * @param  array<string, mixed>  $attributes
      * @return \EinarHansen\Http\Data\DataContract
      */
-    public static function make(array $attributes): DataContract;
+    public function make(array $attributes): DataContract;
 }
