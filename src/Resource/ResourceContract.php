@@ -22,6 +22,7 @@ interface ResourceContract
      * Transform the the response into a data object of the given class.
      *
      * @param  array<string, mixed>  $extraData
+     *
      * @throws \EinarHansen\Http\Exception\InvalidDataFactory
      */
     public function makeData(
