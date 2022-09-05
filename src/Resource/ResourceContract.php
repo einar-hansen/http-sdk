@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace EinarHansen\Http\Resource;
 
+use EinarHansen\Http\Data\DataContract;
+use EinarHansen\Http\Factory\FactoryContract;
 use EinarHansen\Http\Service\ServiceContract;
+use Psr\Http\Message\ResponseInterface;
 
 interface ResourceContract
 {
