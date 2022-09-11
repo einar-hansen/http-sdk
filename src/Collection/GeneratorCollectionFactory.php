@@ -4,20 +4,21 @@ declare(strict_types=1);
 
 namespace EinarHansen\Http\Collection;
 
-use EinarHansen\Http\Factory\FactoryContract;
+use EinarHansen\Http\Contracts\Collection\CollectionFactory;
+use EinarHansen\Http\Contracts\Data\DataFactory;
 use EinarHansen\Http\Wrapper\StreamWrapper;
 use JsonMachine\Items;
 use JsonMachine\JsonDecoder\PassThruDecoder;
 use Psr\Http\Message\ResponseInterface;
 
-class GeneratorCollectionFactory implements CollectionFactoryInterface
+class GeneratorCollectionFactory implements CollectionFactory
 {
     /**
      * {@inheritDoc}
      */
     public function make(
         ResponseInterface $response,
-        FactoryContract $factory,
+        DataFactory $factory,
         string $pointer = null,
         array $extraData = []
     ): iterable {

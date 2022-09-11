@@ -2,9 +2,9 @@
 
 namespace Tests\Service;
 
+use EinarHansen\Http\Contracts\Service\Service as ServiceContract;
 use EinarHansen\Http\Message\RequestFactory;
 use EinarHansen\Http\Service\Service;
-use EinarHansen\Http\Service\ServiceContract;
 
 class PublicApiService extends Service implements ServiceContract
 {

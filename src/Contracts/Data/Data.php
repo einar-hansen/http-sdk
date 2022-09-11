@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace EinarHansen\Http\Data;
+namespace EinarHansen\Http\Contracts\Data;
 
-interface DataContract
+interface Data
 {
     /**
      * @return array<string, mixed>

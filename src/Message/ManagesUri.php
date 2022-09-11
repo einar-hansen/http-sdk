@@ -164,7 +164,7 @@ trait ManagesUri
     /**
      * Creates a new URI with multiple specific query string values.
      *
-     * @param  array<string, string|string[]|null>  $keyValueArray Associative array of key and values
+     * @param  array<string, string|string[]|null>  $array
      */
     public function withQueryValues(array $array = []): static
     {

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace EinarHansen\Http\Service;
 
 use EinarHansen\Http\Collection\ArrayCollectionFactory;
-use EinarHansen\Http\Collection\CollectionFactoryInterface;
+use EinarHansen\Http\Contracts\Collection\CollectionFactory;
 use EinarHansen\Http\Message\RequestFactory;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -27,7 +27,7 @@ class Service
 {
     protected readonly RequestFactory $requestFactory;
 
-    protected readonly CollectionFactoryInterface $collectionFactory;
+    protected readonly CollectionFactory $collectionFactory;
 
     /**
      * @throws \Http\Discovery\Exception\NotFoundException If no PSR-18 clients found.
@@ -38,7 +38,7 @@ class Service
         RequestFactoryInterface $requestFactory = null,
         StreamFactoryInterface $streamFactory = null,
         UriFactoryInterface $uriFactory = null,
-        CollectionFactoryInterface $collectionFactory = null
+        CollectionFactory $collectionFactory = null
     ) {
         $this->collectionFactory = $collectionFactory ?? new ArrayCollectionFactory();
         $this->requestFactory = new RequestFactory(

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Message;
 
-use EinarHansen\Http\Service\ServiceContract;
+use EinarHansen\Http\Contracts\Service\Service;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -12,7 +12,7 @@ use Tests\Service\PublicApiService;
 
 class ManagesClientTest extends TestCase
 {
-    public ServiceContract $service;
+    public Service $service;
 
     protected function setUp(): void
     {

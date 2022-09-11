@@ -16,7 +16,7 @@ class Arr
      *
      * Copied from Laravel: Illuminate\Support\Arr::get()
      *
-     * @return  array<string, mixed>
+     * @return  array<int|string, mixed>
      */
     public static function transformResponseToArray(
         ResponseInterface $response,

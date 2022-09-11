@@ -16,7 +16,7 @@ trait ManagesBody
         return $this->body;
     }
 
-    public function withBody(mixed $body = '', $mode = null): static
+    public function withBody(mixed $body = '', string $mode = null): static
     {
         /** @var \Psr\Http\Message\StreamInterface $body */
         $body = $this->parseBody(body: $body, mode: $mode);

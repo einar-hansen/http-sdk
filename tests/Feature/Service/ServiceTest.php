@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Service;
 
-use EinarHansen\Http\Service\ServiceContract;
+use EinarHansen\Http\Contracts\Service\Service;
 use PHPUnit\Framework\TestCase;
 use Tests\Service\PublicApiService;
 
@@ -18,7 +18,7 @@ class ServiceTest extends TestCase
         $service = new PublicApiService();
 
         $this->assertInstanceOf(
-            expected: ServiceContract::class,
+            expected: Service::class,
             actual: $service
         );
     }

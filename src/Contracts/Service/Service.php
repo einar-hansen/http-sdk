@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace EinarHansen\Http\Service;
+namespace EinarHansen\Http\Contracts\Service;
 
 use EinarHansen\Http\Message\RequestFactory;
 
-interface ServiceContract
+interface Service
 {
     /**
      * Build the Request.

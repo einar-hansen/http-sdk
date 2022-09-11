@@ -42,7 +42,7 @@ trait ManagesClient
     /**
      * Make a GET request to the service and return the response.
      *
-     * @param  string|null|array<string, string|string[]>  $query
+     * @param  array<string, string|string[]>  $query
      */
     public function get(string $url, array $query = []): ResponseInterface
     {
@@ -54,6 +54,8 @@ trait ManagesClient
 
     /**
      * Make a GET request to the service and return the response.
+     *
+     * @param  array<string, string|string[]>  $query
      */
     public function head(string $url, array $query = []): ResponseInterface
     {

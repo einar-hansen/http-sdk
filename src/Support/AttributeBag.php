@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace EinarHansen\Http\Support;
 
+use ArgumentCountError;
 use BackedEnum;
 use DateTimeImmutable;
 use DateTimeInterface;
-use Enum;
 use Exception;
 use InvalidArgumentException;
 
 class AttributeBag
 {
+    /**
+     * @param  array<string, mixed>  $attributes
+     */
     public function __construct(
         public array $attributes = []
     ) {
@@ -20,7 +23,11 @@ class AttributeBag
 
     public function string(string $key, string $default = ''): string
     {
-        return (string) $this->attribute(key: $key) ?? $default;
+        if (! is_string(value: $value = $this->attribute(key: $key))) {
+            return $default;
+        }
+
+        return (string) $value;
     }
 
     public function stringOrNull(string $key): ?string
@@ -30,7 +37,11 @@ class AttributeBag
 
     public function integer(string $key, int $default = 0): int
     {
-        return (int) $this->attribute(key: $key) ?? $default;
+        if (! is_numeric(value: $value = $this->attribute(key: $key))) {
+            return $default;
+        }
+
+        return (int) $value;
     }
 
     public function integerOrNull(string $key): ?int
@@ -43,6 +54,8 @@ class AttributeBag
         $value = $this->hasAttribute(key: $key) ? $this->attribute(key: $key) : $default;
         if (is_float(value: $value)) {
             return $value;
+        } elseif (! is_numeric(value: $value)) {
+            return $default;
         }
 
         return (float) str_replace(
@@ -127,52 +140,56 @@ class AttributeBag
         return $this->hasAttribute(key: $key) ? $this->dateTime(key: $key, format: $format) : null;
     }
 
-    public function dateImmutable(string $key, ?string $format = null): DateTimeImmutable
-    {
-        return $this->date($key, $format)->toImmutable();
-    }
-
-    public function dateImmutableOrNull(string $key, ?string $format = null): ?CarbonImmutable
-    {
-        return $this->filledFromInputOrRoute($key) ? $this->dateImmutable($key, $format) : null;
-    }
-
-    public function collection(string $key): Collection
-    {
-        return collect($this->attribute($key, []));
-    }
-
+    /**
+     * @return  array<int|string, mixed>
+     */
     public function array(string $key): array
     {
-        return $this->collection($key)->all();
-    }
+        if (! $this->hasAttribute($key)) {
+            return [];
+        }
 
-    public function arrayOrNull(string $key): ?array
-    {
-        return $this->filledFromInputOrRoute($key) ? $this->array($key) : null;
+        return (array) $this->attribute($key, []);
     }
 
     /**
-     * @return mixed
-     * BackedEnum
+     * @return  null|array<int|string, mixed>
      */
-    public function enum(string $key, string $enumClass)
+    public function arrayOrNull(string $key): ?array
+    {
+        if (! $this->hasAttribute($key)) {
+            return null;
+        }
+
+        return (array) $this->attribute($key, []);
+    }
+
+    /**
+     * @param  string  $key
+     * @param  class-string  $enumClass
+     * @return BackedEnum
+     */
+    public function enum(string $key, string $enumClass): BackedEnum
     {
         $this->assertEnumClass($enumClass);
 
-        return $enumClass::coerce(
-            is_numeric($value = $this->inputOrRoute($key)) ? (int) $value : $value
+        return $enumClass::from(
+            $this->attribute($key, null)
         );
     }
 
     /**
-     * @return mixed
+     * @param  string  $key
+     * @param  class-string  $enumClass
+     * @return null|BackedEnum
      */
-    public function enumOrNull(string $key, string $enumClass)
+    public function enumOrNull(string $key, string $enumClass): ?BackedEnum
     {
         $this->assertEnumClass($enumClass);
 
-        return $this->filledFromInputOrRoute($key) ? $this->enum($key, $enumClass) : null;
+        return $enumClass::tryFrom(
+            $this->attribute($key, null)
+        );
     }
 
     /**
@@ -183,11 +200,11 @@ class AttributeBag
     protected function assertEnumClass(string $enumClass): void
     {
         if (! class_exists($enumClass)) {
-            throw new InvalidArgumentException("`$enumClass` must be a subclass of `".Enum::class.'` or `'.FlaggedEnum::class.'`.');
+            throw new InvalidArgumentException("The class `$enumClass` does not exists.");
         }
 
-        if (! is_subclass_of($enumClass, FlaggedEnum::class) && ! is_subclass_of($enumClass, Enum::class)) {
-            throw new InvalidArgumentException("`$enumClass` must be a subclass of `".Enum::class.'` or `'.FlaggedEnum::class.'`.');
+        if (! is_subclass_of($enumClass, BackedEnum::class)) {
+            throw new InvalidArgumentException("`$enumClass` must be a subclass of `".BackedEnum::class.'`.');
         }
     }
 
@@ -218,20 +235,23 @@ class AttributeBag
         return isset($this->attributes[$key]);
     }
 
-    public function map(string $key, callable $callback)
+    /**
+     * @return array<int|string, mixed>
+     */
+    public function map(string $key, callable $callback): array
     {
-        $keys = array_keys(array: $this->attribute(key: $key, default: []));
+        $keys = array_keys(array: $this->array(key: $key));
 
         try {
             $items = array_map(
                 $callback,
-                $this->attribute(key: $key, default: []),
+                $this->array(key: $key),
                 $keys
             );
         } catch (ArgumentCountError) {
             $items = array_map(
                 callback: $callback,
-                array: $this->attribute(key: $key, default: []),
+                array: $this->array(key: $key),
             );
         }
 
@@ -241,7 +261,7 @@ class AttributeBag
     /**
      * Apply the callback if the given "value" is (or resolves to) truthy.
      */
-    public function when(string $key, callable $callback, $default = null): mixed
+    public function when(string $key, callable $callback, mixed $default = null): mixed
     {
         if (! $this->hasAttribute(key: $key)) {
             return $default;

@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace EinarHansen\Http\Collection;
+namespace EinarHansen\Http\Contracts\Collection;
 
-use EinarHansen\Http\Factory\FactoryContract;
+use EinarHansen\Http\Contracts\Data\DataFactory;
 use Psr\Http\Message\ResponseInterface;
 
-interface CollectionFactoryInterface
+interface CollectionFactory
 {
     /**
      * Transform the items of the collection to the given class.
      *
      * @param  array<string, mixed>  $extraData
-     * @return  iterable<int, \EinarHansen\Http\Data\DataContract>
+     * @return  iterable<int, \EinarHansen\Http\Contracts\Data\Data>
      */
     public function make(
         ResponseInterface $response,
-        FactoryContract $factory,
+        DataFactory $factory,
         string $pointer = null,
         array $extraData = []
     ): iterable;

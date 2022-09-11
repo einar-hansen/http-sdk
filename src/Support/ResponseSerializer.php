@@ -30,7 +30,7 @@ class ResponseSerializer
         string $filename,
         ResponseInterface $response,
     ): bool {
-        $type = $response->getHeader('content-type')[0];
+        $type = $response->getHeader('content-type')[0] ?? '';
         if (static::isTextResponse(header: $type)) {
             $body = (string) $response->getBody();
         } else {
@@ -51,10 +51,21 @@ class ResponseSerializer
 
     public function get(string $filename): ResponseInterface
     {
+        $content = file_get_contents(filename: $filename);
+        /**
+         * @var  array{
+         *     status: int,
+         *     headers: string[][],
+         *     body: string,
+         *     version: string,
+         *     reason: string,
+         * } $data
+         */
         $data = json_decode(
-            json: file_get_contents(filename: $filename),
+            json:  $content ? $content : '',
             associative: true
         );
+
         foreach (['content-type', 'Content-Type'] as $key) {
             if (isset($data['headers'][$key])) {
                 $type = $data['headers'][$key][0];
@@ -62,7 +73,7 @@ class ResponseSerializer
                 continue;
             }
         }
-        if (! static::isTextResponse($type)) {
+        if (! static::isTextResponse($type ?? '')) {
             $data['body'] = base64_decode(string: $data['body']);
         }
 
