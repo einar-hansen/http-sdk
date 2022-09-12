@@ -6,6 +6,7 @@ namespace EinarHansen\Http\Contracts\Pagination;
 
 use Countable;
 use IteratorAggregate;
+use JsonSerializable;
 use Traversable;
 
 /**
@@ -18,63 +19,56 @@ interface Paginator extends Countable, IteratorAggregate, JsonSerializable
      *
      * @return int
      */
-    public function currentPage();
+    public function currentPage(): int;
 
     /**
-     * The URL for the next page, or null.
+     * The next page, or null.
      *
-     * @return int|null
+     * @return static|null
      */
-    public function nextPage();
+    public function nextPage(): ?static;
 
     /**
-     * Get the URL for the previous page, or null.
+     * The previous page, or null.
      *
-     * @return string|null
+     * @return static|null
      */
-    public function previousPage();
+    public function previousPage(): ?static;
 
     /**
      * Get all of the items being paginated.
      *
      * @return  iterable<int, \EinarHansen\Http\Contracts\Data\Data>
      */
-    public function items();
+    public function items(): iterable;
 
     /**
      * Get the "index" of the first item being paginated.
      *
      * @return int
      */
-    public function firstItem();
+    public function firstItem(): int;
 
     /**
      * Get the "index" of the last item being paginated.
      *
      * @return int
      */
-    public function lastItem();
+    public function lastItem(): int;
 
     /**
      * Determine how many items are being shown per page.
      *
      * @return int
      */
-    public function perPage();
-
-    /**
-     * Determine if there are enough items to split into multiple pages.
-     *
-     * @return bool
-     */
-    public function hasPages();
+    public function perPage(): int;
 
     /**
      * Determine if there are more items in the data store.
      *
      * @return bool
      */
-    public function hasMorePages();
+    public function hasMorePages(): bool;
 
     /**
      * Get the number of items for the current page.
@@ -88,14 +82,14 @@ interface Paginator extends Countable, IteratorAggregate, JsonSerializable
      *
      * @return bool
      */
-    public function isEmpty();
+    public function isEmpty(): bool;
 
     /**
      * Determine if the list of items is not empty.
      *
      * @return bool
      */
-    public function isNotEmpty();
+    public function isNotEmpty(): bool;
 
     /**
      * Get an iterator for the items.
