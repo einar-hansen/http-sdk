@@ -116,5 +116,5 @@ interface Paginator extends Countable, IteratorAggregate, JsonSerializable
      *
      * @return array<int, \EinarHansen\Http\Contracts\Data\Data>
      */
-    public function toArray();
+    public function toArray(): array;
 }
