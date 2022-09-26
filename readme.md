@@ -21,11 +21,9 @@ composer require einar-hansen/http-sdk
 
 This package is designed to lets you build packages and sdk's that connects to external API services in record speed. All you have to do is extend the gateway and add your own endpoints and resources.
 
-More documentation is to come...
+## Implementations
 
-## Todo
-Fix post, put, patch methods, content body
-Complete AttributeBag class
+- [PHP FootballData - API Service](https://github.com/einar-hansen/php-football-data)
 
 ## Testing
 
