@@ -13,7 +13,10 @@ use Psr\Http\Message\ResponseInterface;
 class ArrayCollectionFactory implements CollectionFactory
 {
     /**
-     * {@inheritDoc}
+     * Transform the items of the collection to the given class.
+     *
+     * @param  array<string, mixed>  $extraData
+     * @return  iterable<int, \EinarHansen\Http\Contracts\Data\Data>
      */
     public function make(
         ResponseInterface $response,

@@ -110,4 +110,16 @@ interface RateLimiterState
      * @return void
      */
     public function clear(): void;
+
+    /**
+     * Grab an array that show details about the current state.
+     *
+     * @return array{
+     *         expiresAt: ?DateTimeInterface,
+     *         expiresIn: ?int,
+     *         attempts: int,
+     *         remaining: int,
+     * }
+     */
+    public function toArray(): array;
 }

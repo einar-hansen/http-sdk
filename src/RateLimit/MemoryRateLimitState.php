@@ -233,4 +233,24 @@ class MemoryRateLimitState implements RateLimiterState
 
         return new DateTimeImmutable(datetime: 'now');
     }
+
+    /**
+     * Grab an array that show details about the current state.
+     *
+     * @return array{
+     *         expiresAt: ?DateTimeInterface,
+     *         expiresIn: ?int,
+     *         attempts: int,
+     *         remaining: int,
+     * }
+     */
+    public function toArray(): array
+    {
+        return [
+            'expiresAt' => $this->getExpiresAt(),
+            'expiresIn' => $this->getExpiresIn(),
+            'attempts' => $this->getAttempts(),
+            'remaining' => $this->getRemaining(),
+        ];
+    }
 }

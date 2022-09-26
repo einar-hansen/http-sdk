@@ -11,10 +11,6 @@ use Psr\SimpleCache\CacheInterface;
 
 class Psr16RateLimitState implements RateLimiterState
 {
-    public ?DateTimeImmutable $expiresAt = null;
-
-    public int $attempts = 0;
-
     /**
      * Create a new limit instance. State is tracked in lifecycle.
      *
@@ -252,5 +248,25 @@ class Psr16RateLimitState implements RateLimiterState
         }
 
         return new DateTimeImmutable(datetime: 'now');
+    }
+
+    /**
+     * Grab an array that show details about the current state.
+     *
+     * @return array{
+     *         expiresAt: ?DateTimeInterface,
+     *         expiresIn: ?int,
+     *         attempts: int,
+     *         remaining: int,
+     * }
+     */
+    public function toArray(): array
+    {
+        return [
+            'expiresAt' => $this->getExpiresAt(),
+            'expiresIn' => $this->getExpiresIn(),
+            'attempts' => $this->getAttempts(),
+            'remaining' => $this->getRemaining(),
+        ];
     }
 }

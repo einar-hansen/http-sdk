@@ -72,13 +72,18 @@ class Resource implements ResourceContract
             $factory = new $factory();
         }
 
-        return $this->collectionFactory
+        $collection = $this->collectionFactory
             ->make(
                 response: $response,
                 factory: $factory,
                 pointer: $pointer,
                 extraData: $extraData,
             );
+        if (! is_callable($collection)) {
+            return $collection;
+        }
+
+        return $collection();
     }
 
     /**
